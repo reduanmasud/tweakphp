@@ -1,25 +1,7 @@
-<div align="center">
-  <img src="/build/icon.png" width="100px"/>
-</div>
+# Tauri + Vue + TypeScript
 
-<div align="center">
-  <h1>TweakPHP</h1>
-</div>
+This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
 
-<div align="center">
-  TweakPHP is a desktop application with a code editor to tweak your PHP code.
-</div>
+## Recommended IDE Setup
 
-<div align="center">
-  (TweakPHP is currently Beta)
-</div>
-
-<br>
-
-<div align="center">
-  <img src="https://img.shields.io/github/downloads/tweakphp/tweakphp/total" />
-</div>
-
-<div align="center">
-  <a href="https://github.com/tweakphp/tweakphp/releases">Download Now</a> | <a href="https://tweakphp.com/">Documentation</a> | <a href="https://discord.gg/Et3UTT4xwC">Discord</a>
-</div>
+- [VS Code](https://code.visualstudio.com/) + [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)

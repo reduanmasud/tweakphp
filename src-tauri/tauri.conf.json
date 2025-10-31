@@ -1,0 +1,70 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "TweakPHP",
+  "version": "0.12.0",
+  "identifier": "com.tweakphp.app",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:4999",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "TweakPHP",
+        "width": 1100,
+        "height": 700,
+        "minWidth": 1100,
+        "minHeight": 700,
+        "resizable": true,
+        "maximizable": true,
+        "minimizable": true,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "plugins": {
+    "updater": {
+      "active": true,
+      "endpoints": ["https://github.com/tweakphp/tweakphp/releases/latest/download/updater.json"],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEVCRDY5OTY2NkZGNjU2MTUKUldRSTNFRk1QWHJwNVhDNGZsc0dZQVBRaDZNQWdVSUxlbzJxMkNJM0IyOVk1RnNxQm0xb0EwVDg="
+    }
+  },
+  "bundle": {
+    "active": true,
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
+    "resources": ["../public"],
+    "copyright": "Copyright © 2024 Saeed Vaziry",
+    "category": "DeveloperTool",
+    "shortDescription": "Tweak your PHP code easily",
+    "longDescription": "TweakPHP is a powerful PHP development tool that allows you to execute and test PHP code locally, remotely via SSH, in Docker containers, Kubernetes pods, or Laravel Vapor environments.",
+    "macOS": {
+      "frameworks": [],
+      "minimumSystemVersion": "10.13",
+      "exceptionDomain": "",
+      "signingIdentity": null,
+      "entitlements": "entitlements.mac.plist"
+    },
+    "linux": {
+      "deb": {
+        "depends": ["zlib1g", "zlib1g-dev"]
+      },
+      "rpm": {
+        "depends": ["zlib"]
+      },
+      "appimage": {
+        "bundleMediaFramework": false
+      }
+    },
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    }
+  }
+}

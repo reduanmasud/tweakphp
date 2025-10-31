@@ -5,21 +5,41 @@ import { resolve } from 'path'
 
 dotenv.config()
 
+// @ts-expect-error process is a nodejs global
+const host = process.env.TAURI_DEV_HOST
+
 // https://vitejs.dev/config/
 export default defineConfig({
-  root: 'src/renderer/',
+  root: 'src/',
   base: './',
-  server: {
-    port: parseInt(process.env.VITE_SERVER_PORT || '4999'),
-  },
+  publicDir: resolve(__dirname, 'public'),
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src/renderer/'),
+      '@': resolve(__dirname, 'src/'),
     },
   },
+  server: {
+    port: parseInt(process.env.VITE_SERVER_PORT || '4999'),
+    strictPort: true,
+    host: host || false,
+    hmr: host
+      ? {
+          protocol: 'ws',
+          host,
+          port: parseInt(process.env.VITE_SERVER_PORT || '4999') + 1,
+        }
+      : undefined,
+    watch: {
+      // tell Vite to ignore watching `src-tauri`
+      ignored: ['**/src-tauri/**'],
+    },
+  },
+  // prevent Vite from obscuring rust errors
+  clearScreen: false,
   build: {
-    outDir: '../../dist/app/',
+    outDir: '../dist/',
     assetsDir: '.',
   },
 })
+

@@ -23,12 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-release
-
-public/laravel
-
-.env
-
-tweakphp.db
-tweakphp.db-wal
-tweakphp.db-shm
+original/
+target/
+.vscode

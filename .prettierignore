@@ -5,3 +5,6 @@ out
 .idea
 .github
 *.md
+dist
+src-tauri/target
+
