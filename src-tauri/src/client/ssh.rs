@@ -68,9 +68,10 @@ impl SshClient {
             // This could be enhanced with sshpass integration
         }
         
-        // Add SSH options
+        // Add SSH options to suppress warnings and known hosts
         cmd.arg("-o").arg("StrictHostKeyChecking=no");
         cmd.arg("-o").arg("UserKnownHostsFile=/dev/null");
+        cmd.arg("-o").arg("LogLevel=ERROR"); // Suppress informational messages
         
         // Build connection string
         let connection_string = format!("{}@{}", config.username, config.host);
@@ -88,7 +89,31 @@ impl SshClient {
 
         if !output.status.success() {
             let stderr = String::from_utf8_lossy(&output.stderr);
-            return Err(format!("SSH command failed: {}", stderr));
+            // Filter out common SSH informational messages that aren't actual errors
+            let error_msg = stderr
+                .lines()
+                .filter(|line| {
+                    !line.contains("Warning: Permanently added")
+                    && !line.contains("permanently added")
+                    && !line.trim().is_empty()
+                })
+                .collect::<Vec<_>>()
+                .join("\n");
+            
+            if error_msg.is_empty() {
+                // If stderr only contains informational messages, check stdout for actual errors
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                return Err(format!("SSH command failed: {}", stdout.trim()));
+            }
+            
+            return Err(format!("SSH command failed: {}", error_msg));
+        }
+
+        // Even on success, filter out informational messages from stderr that might have leaked through
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        if !stderr.trim().is_empty() && !stderr.contains("Warning: Permanently added") && !stderr.contains("permanently added") {
+            // If there's actual content in stderr that's not just the known hosts warning, log it but don't fail
+            eprintln!("SSH stderr (non-fatal): {}", stderr.trim());
         }
 
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
@@ -106,8 +131,10 @@ impl SshClient {
             }
         }
         
+        // Add SSH options to suppress warnings and known hosts
         cmd.arg("-o").arg("StrictHostKeyChecking=no");
         cmd.arg("-o").arg("UserKnownHostsFile=/dev/null");
+        cmd.arg("-o").arg("LogLevel=ERROR"); // Suppress informational messages
         
         cmd.arg(local_path);
         let remote_file = format!("{}@{}:{}", config.username, config.host, remote_path);
@@ -118,7 +145,28 @@ impl SshClient {
 
         if !output.status.success() {
             let stderr = String::from_utf8_lossy(&output.stderr);
-            return Err(format!("SCP upload failed: {}", stderr));
+            // Filter out common SSH informational messages that aren't actual errors
+            let error_msg = stderr
+                .lines()
+                .filter(|line| {
+                    !line.contains("Warning: Permanently added")
+                    && !line.contains("permanently added")
+                    && !line.trim().is_empty()
+                })
+                .collect::<Vec<_>>()
+                .join("\n");
+            
+            if error_msg.is_empty() {
+                return Err("SCP upload failed (no error details available)".to_string());
+            }
+            
+            return Err(format!("SCP upload failed: {}", error_msg));
+        }
+
+        // Filter out informational messages from stderr even on success
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        if !stderr.trim().is_empty() && !stderr.contains("Warning: Permanently added") && !stderr.contains("permanently added") {
+            eprintln!("SCP stderr (non-fatal): {}", stderr.trim());
         }
 
         Ok(())

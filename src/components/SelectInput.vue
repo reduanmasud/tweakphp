@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
+  import { ref, watch, computed } from 'vue'
   import { useSettingsStore } from '../stores/settings'
 
   // Define props
@@ -27,24 +27,47 @@
       selectedValue.value = newValue
     }
   )
+
+  // Computed properties for CSS v-bind
+  const backgroundColor = computed(() => settingsStore.colors.backgroundLight)
+  const foregroundColor = computed(() => settingsStore.colors.foreground)
 </script>
 
 <template>
-  <div>
-    <select
-      v-model="selectedValue"
-      @change="emitChange"
-      class="!w-full h-7 text-sm border-r-8 border-transparent py-1 px-2 outline focus:!outline-primary-500 rounded-md"
-      :style="{
-        backgroundColor: settingsStore.colors.backgroundLight,
-        color: settingsStore.colors.foreground,
-        outlineColor: settingsStore.colors.border,
-      }"
-    >
-      <option value="" selected disabled>
-        {{ placeholder }}
-      </option>
-      <slot></slot>
-    </select>
-  </div>
+  <select
+    v-model="selectedValue"
+    @change="emitChange"
+    class="text-sm h-7 outline outline-1 py-1 px-2 focus:!outline-primary-500 rounded-md appearance-none"
+    :style="{
+      backgroundColor: settingsStore.colors.backgroundLight,
+      color: settingsStore.colors.foreground,
+      outlineColor: settingsStore.colors.border,
+    }"
+    v-bind="$attrs"
+  >
+    <option value="" selected disabled>
+      {{ placeholder }}
+    </option>
+    <slot></slot>
+  </select>
 </template>
+
+<style scoped>
+select {
+  background-color: v-bind('backgroundColor') !important;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-sizing: border-box;
+  margin: 0;
+  outline-offset: 0;
+}
+
+select:focus {
+  outline-offset: 0;
+}
+
+select option {
+  background-color: v-bind('backgroundColor');
+  color: v-bind('foregroundColor');
+}
+</style>

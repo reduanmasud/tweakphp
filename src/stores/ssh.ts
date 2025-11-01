@@ -1,6 +1,7 @@
 import { Ref, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { ConnectionConfig } from '../types/ssh.type'
+import { clampToU32 } from '../utils/id'
 
 export const useSSHStore = defineStore('ssh', () => {
   let storedConnections: ConnectionConfig[] = []
@@ -48,7 +49,7 @@ export const useSSHStore = defineStore('ssh', () => {
 const normalize = (connection: any): any => {
   return {
     type: 'ssh',
-    id: connection.id ?? 0,
+    id: clampToU32(connection.id ?? 0),
     name: connection.name ?? '',
     color: connection.color ?? '',
     host: connection.host ?? '',

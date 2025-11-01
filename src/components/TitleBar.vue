@@ -63,6 +63,7 @@
 <template>
   <div
     id="title-bar"
+    data-tauri-drag-region
     class="fixed top-0 right-0 h-[38px] z-40 left-0 w-full border-b"
     :style="{
       backgroundColor: settingsStore.colors.background,

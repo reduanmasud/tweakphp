@@ -12,6 +12,7 @@
   import DropDownItem from '../components/DropDownItem.vue'
   import { useSettingsStore } from '../stores/settings'
   import { ConnectReply } from '../types/client.type'
+  import { generateU32Id } from '../utils/id'
 
   const platform = window.platformInfo.getPlatform()
   const sshStore = useSSHStore()
@@ -47,7 +48,7 @@
   ]
   const form: Ref<ConnectionConfig> = ref({
     type: 'ssh',
-    id: Date.now(),
+    id: generateU32Id(),
     name: '',
     color: 'rose',
     host: '',
@@ -78,7 +79,24 @@
   })
 
   const connect = () => {
+    // Validate required fields
+    if (!form.value.host || !form.value.username) {
+      alert('Please fill in all required fields (Host and Username)')
+      return
+    }
+
+    if (form.value.auth_type === 'key' && !form.value.privateKey) {
+      alert('Please provide a private key path')
+      return
+    }
+
+    if (form.value.auth_type === 'password' && !form.value.password) {
+      alert('Please provide a password')
+      return
+    }
+
     sshStore.setConnecting(true)
+    console.log('Connecting with config:', { ...form.value, password: '***', passphrase: '***' })
     window.ipcRenderer.send('client.connect', {
       connection: { ...form.value },
       data: {
@@ -90,20 +108,42 @@
 
   const connectReply = (e: any) => {
     const reply = e.detail as ConnectReply
-    if (reply.data?.state === 'create-ssh') {
-      sshStore.setConnecting(false)
-      if (reply.connected) {
-        sshStore.addConnection(reply.connection)
-        emit('connected')
-      }
+    const state = reply.data?.state
+    
+    console.log('Connect reply received:', { state, connected: reply.connected, error: reply.error })
+    
+    // Only handle replies for this view's states
+    if (state !== 'create-ssh' && state !== 'edit-ssh') {
+      return
     }
 
-    if (reply.data?.state === 'edit-ssh') {
-      sshStore.setConnecting(false)
-      if (reply.connected) {
+    sshStore.setConnecting(false)
+
+    if (reply.connected) {
+      if (state === 'create-ssh') {
+        sshStore.addConnection(reply.connection)
+      } else if (state === 'edit-ssh') {
         sshStore.updateConnection(reply.connection.id, reply.connection)
-        emit('connected')
       }
+      emit('connected')
+    } else {
+      // Show error to user
+      let errorMessage = reply.error 
+        ? (typeof reply.error === 'string' 
+            ? reply.error 
+            : reply.error?.message || String(reply.error))
+        : 'Failed to connect. Please check your connection settings.'
+      
+      // Filter out SSH informational messages that aren't actual errors
+      if (errorMessage.includes('Warning: Permanently added') || errorMessage.includes('permanently added')) {
+        // If the error only contains the known hosts warning, it's not a real error
+        // This shouldn't happen with our backend filtering, but handle it just in case
+        console.warn('Filtered SSH informational message:', errorMessage)
+        // Don't show alert for informational messages
+        return
+      }
+      
+      alert(errorMessage)
     }
   }
 </script>
@@ -113,12 +153,12 @@
     <form class="mx-auto space-y-3">
       <div class="grid grid-cols-2 items-center">
         <div>Name</div>
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between gap-4">
           <TextInput class="flex-grow mr-3" id="name" v-model="form.name" placeholder="production-server" />
-          <DropDown align="right" class="flex-grow-0">
+          <DropDown align="right" class="flex gap-2">
             <template #trigger>
               <div
-                class="!w-full h-7 text-sm border-transparent py-1 px-2 outline focus:!outline-primary-500 rounded-md flex items-center"
+                class="w-full h-7 text-sm border-transparent py-1 px-2 outline focus:!outline-primary-500 rounded-md flex items-center"
                 :style="{
                   backgroundColor: settingsStore.colors.backgroundLight,
                   color: settingsStore.colors.foreground,
@@ -128,7 +168,7 @@
                 <div class="size-4 rounded-full" :class="[`bg-${form.color}-500`]"></div>
               </div>
             </template>
-            <div class="space-y-1">
+            <div class="space-y-1 flex-none">
               <DropDownItem
                 v-for="color in colors"
                 :key="`color-${color}`"

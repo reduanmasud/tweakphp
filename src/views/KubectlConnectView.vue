@@ -11,6 +11,7 @@
   import { useSettingsStore } from '../stores/settings'
   import { useKubectlStore } from '../stores/kubectl'
   import { ActionReply } from '../types/client.type'
+  import { generateU32Id } from '../utils/id'
 
   const kubectlStore = useKubectlStore()
   const settingsStore = useSettingsStore()
@@ -47,7 +48,7 @@
   ]
   const form: Ref<ConnectionConfig> = ref({
     type: 'kubectl',
-    id: Date.now(),
+    id: generateU32Id(),
     name: '',
     color: 'rose',
     context: '',

@@ -115,7 +115,18 @@ async function handleSend(channel: string, payload?: any) {
 					const result = await invoke('client_connect', { payload })
 					emitLocal('client.connect.reply', result)
 				} catch (error) {
-					emitLocal('client.connect.reply', { connected: false, error })
+					console.error('[client.connect] Error:', error)
+					// Extract error message from Tauri error
+					const errorMessage = error instanceof Error 
+						? error.message 
+						: typeof error === 'string' 
+							? error 
+							: String(error)
+					emitLocal('client.connect.reply', { 
+						connected: false, 
+						error: errorMessage,
+						data: payload?.data 
+					})
 				}
 				break
 			}

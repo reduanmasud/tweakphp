@@ -1,6 +1,7 @@
 import { Ref, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { ConnectionConfig } from '../types/kubectl.type'
+import { clampToU32 } from '../utils/id'
 
 export const useKubectlStore = defineStore('kubectl', () => {
   let storedConnections: ConnectionConfig[] = []
@@ -48,7 +49,7 @@ export const useKubectlStore = defineStore('kubectl', () => {
 const normalize = (connection: any): any => {
   return {
     type: 'kubectl',
-    id: connection.id ?? 0,
+    id: clampToU32(connection.id ?? 0),
     name: connection.name ?? '',
     color: connection.color ?? '',
     context: connection.context ?? '',
