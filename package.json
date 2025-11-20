@@ -160,7 +160,7 @@
     "esbuild": "^0.25.0",
     "express": "^4.21.0",
     "fs-extra": "^11.2.0",
-    "glob": "^11.0.0",
+    "glob": "^11.1.0",
     "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@~7.0.7",
     "monaco-editor-wrapper": "~5.4.0",
     "monaco-languageclient": "~8.7.0",
