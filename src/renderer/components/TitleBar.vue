@@ -147,12 +147,11 @@
           </SecondaryButton>
         </template>
         <SecondaryButton
-          v-if="tab"
           class="!px-2"
           v-tippy="{ content: 'Sponsor this project', placement: 'bottom' }"
           @click="sponsor()"
         >
-          <HeartIcon class="size-4 text-pink-600" />
+          <HeartIcon class="size-4 text-pink-500" />
         </SecondaryButton>
       </div>
     </div>
