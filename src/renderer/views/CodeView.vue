@@ -65,13 +65,11 @@
   })
 
   const handleLspReconnect = () => {
-    if (lspStore.status === 'disconnected') {
-      window.ipcRenderer.send('lsp.restart')
-      try {
-        // @ts-ignore - template ref typed at runtime
-        codeEditor?.value?.reconnectLsp && codeEditor.value.reconnectLsp()
-      } catch (e) {}
-    }
+    window.ipcRenderer.send('lsp.restart')
+    try {
+      // @ts-ignore - template ref typed at runtime
+      codeEditor?.value?.reconnectLsp && codeEditor.value.reconnectLsp()
+    } catch (e) {}
   }
 
   const vaporRequestEnvironmentTab = () => {
@@ -348,8 +346,8 @@
       }"
     >
       <div
-        class="flex items-center ml-2"
-        :class="{ 'cursor-pointer': lspStore.status === 'disconnected' }"
+        class="flex items-center ml-2 cursor-pointer"
+        :class="[settingsStore.isNavigationExpanded ? 'pl-[145px]' : '']"
         v-tippy="lspStatusTooltip"
         @click="handleLspReconnect"
       >
