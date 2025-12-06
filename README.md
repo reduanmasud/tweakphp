@@ -23,3 +23,25 @@
 <div align="center">
   <a href="https://github.com/tweakphp/tweakphp/releases">Download Now</a> | <a href="https://tweakphp.com/">Documentation</a> | <a href="https://discord.gg/Et3UTT4xwC">Discord</a>
 </div>
+
+## Installation
+
+### macOS
+
+#### Homebrew
+
+```bash
+brew install tweakphp/tap/tweakphp
+```
+
+#### Manual Download
+
+Download the latest release from the [releases page](https://github.com/tweakphp/tweakphp/releases).
+
+### Linux
+
+Download the AppImage, deb, or rpm package from the [releases page](https://github.com/tweakphp/tweakphp/releases).
+
+### Windows
+
+Download the installer from the [releases page](https://github.com/tweakphp/tweakphp/releases).
