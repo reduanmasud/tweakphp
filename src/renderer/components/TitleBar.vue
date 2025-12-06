@@ -1,5 +1,12 @@
 <script setup lang="ts">
-  import { PlayIcon, ArrowPathIcon, XMarkIcon, CodeBracketIcon, RectangleStackIcon } from '@heroicons/vue/24/outline'
+  import {
+    PlayIcon,
+    ArrowPathIcon,
+    XMarkIcon,
+    CodeBracketIcon,
+    RectangleStackIcon,
+    HeartIcon,
+  } from '@heroicons/vue/24/outline'
   import events from '../events'
   import { useRoute } from 'vue-router'
   import router from '../router'
@@ -57,6 +64,10 @@
   const removeTab = (id: number) => {
     tabStore.removeTab(id)
     vaporStore.removeVaporConfig(id)
+  }
+
+  const sponsor = () => {
+    window.ipcRenderer.send('link.open', 'https://github.com/sponsors/saeedvaziry')
   }
 </script>
 
@@ -135,6 +146,14 @@
             <XMarkIcon class="size-4" />
           </SecondaryButton>
         </template>
+        <SecondaryButton
+          v-if="tab"
+          class="!px-2"
+          v-tippy="{ content: 'Sponsor this project', placement: 'bottom' }"
+          @click="sponsor()"
+        >
+          <HeartIcon class="size-4 text-pink-600" />
+        </SecondaryButton>
       </div>
     </div>
   </div>
