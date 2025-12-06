@@ -2,6 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron'
 import os from 'os'
 
 export interface IpcRenderer {
+  invoke: (channel: string, ...args: any[]) => Promise<any>
   send: (channel: string, ...args: any[]) => void
   on: (channel: string, callback: (...args: any[]) => void) => void
   removeListener: (channel: string, callback: (...args: any[]) => void) => void
@@ -14,6 +15,9 @@ export interface PlatformInfo {
 }
 
 const ipcRendererHandler: IpcRenderer = {
+  invoke: (channel: string, ...args: any[]) => {
+    return ipcRenderer.invoke(channel, ...args)
+  },
   send: (channel: string, ...args: any[]) => {
     ipcRenderer.send(channel, ...args)
   },

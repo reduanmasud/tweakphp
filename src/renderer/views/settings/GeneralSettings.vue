@@ -6,8 +6,10 @@
   import TextInput from '../../components/TextInput.vue'
   import { ref, onMounted } from 'vue'
   import UpdateApp from '../../components/UpdateApp.vue'
+  import ToastAlert from '@/components/ToastAlert.vue'
 
   const saved = ref(false)
+  const showToast = ref(false)
   const settingsStore = useSettingsStore()
 
   onMounted(() => {
@@ -20,20 +22,20 @@
 
   const saveSettings = () => {
     saved.value = true
+    showToast.value = true
     settingsStore.update()
     setTimeout(() => {
       saved.value = false
+      showToast.value = false
     }, 2000)
   }
 </script>
 
 <template>
   <div>
+    <ToastAlert v-if="showToast" title="Settings Saved" />
     <div class="flex items-center justify-between">
       <Title>Settings</Title>
-      <span :class="{ 'opacity-0': !saved, 'opacity-65': saved }" class="transition-all duration-300">
-        Changes Saved
-      </span>
     </div>
     <Divider class="mt-3" />
     <div class="mt-3 grid grid-cols-2 items-center">

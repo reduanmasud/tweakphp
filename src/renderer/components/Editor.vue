@@ -9,6 +9,8 @@
   import { useSettingsStore } from '../stores/settings'
   import { useLspStore } from '../stores/lsp'
   import { useTabsStore } from '../stores/tabs'
+  import { registerCompletion } from 'monacopilot'
+  import ToastAlert from '@/components/ToastAlert.vue'
 
   const settingsStore = useSettingsStore()
   const lspStore = useLspStore()
@@ -46,13 +48,18 @@
       type: Boolean,
       default: false,
     },
+    withAiCompletion: {
+      type: Boolean,
+      default: false,
+    },
   })
 
+  const errorAiCompletion = ref<string | null>(null)
   const editorContainer = ref(null)
+
   const vimMode = ref(null)
 
   const isUpdatingFromHistory = ref(false)
-
   function saveHistoryNow(tabId: number, code: string, cursor: monaco.IPosition) {
     if (!window.historyApi) {
       console.warn('History API is not available')
@@ -173,6 +180,23 @@
       }
 
       editor.setModel(editorModel)
+
+      if (props.withAiCompletion && settingsStore.settings.aiStatus) {
+        registerCompletion(monaco, editor, {
+          language: 'php',
+          trigger: 'onIdle',
+          enableCaching: false,
+          requestHandler: async ({ body }) => {
+            return await window.ipcRenderer.invoke('ai:get-completion', {
+              context: body,
+              tab: JSON.parse(JSON.stringify(tabsStore.current)),
+            })
+          },
+          onError: error => {
+            errorAiCompletion.value = error.message
+          },
+        })
+      }
 
       editor.onDidChangeModelContent(() => {
         if (editor) {
@@ -352,5 +376,12 @@
 </script>
 
 <template>
-  <div ref="editorContainer" class="w-full h-full"></div>
+  <div ref="editorContainer" class="w-full h-full">
+    <ToastAlert
+      :key="new Date().getTime()"
+      v-if="errorAiCompletion"
+      title="AI Completions Error"
+      :message="errorAiCompletion"
+    />
+  </div>
 </template>

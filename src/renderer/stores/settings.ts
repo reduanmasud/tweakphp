@@ -47,6 +47,13 @@ export const useSettingsStore = defineStore('settings', () => {
     windowWidth: 1100,
     windowHeight: 700,
     intelephenseLicenseKey: '',
+    aiStatus: false,
+    aiProvider: 'openrouter',
+    aiModelId: '',
+    aiApiKey: '',
+    aiPromptTemplateGenerateCodeFromComment: '',
+    aiPromptTemplateCompleteComment: '',
+    aiPromptTemplateCompleteCode: '',
     navigationDisplay: 'collapsed',
   }
 
@@ -63,7 +70,6 @@ export const useSettingsStore = defineStore('settings', () => {
   }
 
   const update = () => {
-    // clone settings json
     window.ipcRenderer.send('settings.store', {
       ...settings.value,
     })

@@ -33,6 +33,14 @@ const defaultSettings: Settings = {
   windowWidth: 1100,
   windowHeight: 700,
   intelephenseLicenseKey: '' as any,
+  aiStatus: false,
+  aiProvider: null,
+  aiModelId: null,
+  aiApiKey: null,
+  aiPromptTemplateGenerateCodeFromComment: '',
+  aiPromptTemplateCompleteComment: '',
+  aiPromptTemplateCompleteCode: '',
+  navigationDisplay: 'collapsed',
 }
 
 export const init = async () => {
@@ -88,6 +96,19 @@ export const getSettings = () => {
       windowWidth: settingsJson.windowWidth || defaultSettings.windowWidth,
       windowHeight: settingsJson.windowHeight || defaultSettings.windowHeight,
       intelephenseLicenseKey: settingsJson.intelephenseLicenseKey || '',
+      aiStatus: settingsJson.aiStatus || defaultSettings.aiStatus,
+      aiProvider: settingsJson.aiProvider || null,
+      aiModelId: settingsJson.aiModelId || null,
+      aiApiKey: settingsJson.aiApiKey || null,
+      aiPromptTemplateGenerateCodeFromComment:
+        settingsJson.aiPromptTemplateGenerateCodeFromComment !== undefined
+          ? settingsJson.aiPromptTemplateGenerateCodeFromComment
+          : '',
+      aiPromptTemplateCompleteComment:
+        settingsJson.aiPromptTemplateCompleteComment !== undefined ? settingsJson.aiPromptTemplateCompleteComment : '',
+      aiPromptTemplateCompleteCode:
+        settingsJson.aiPromptTemplateCompleteCode !== undefined ? settingsJson.aiPromptTemplateCompleteCode : '',
+      navigationDisplay: settingsJson.navigationDisplay || defaultSettings.navigationDisplay,
     }
   } else {
     settings = defaultSettings
