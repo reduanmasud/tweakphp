@@ -60,6 +60,10 @@ Download the `.rpm` package from the [releases page](https://github.com/tweakphp
 sudo rpm -i TweakPHP-*.rpm
 ```
 
+#### Deb Package
+
+Download the `.deb` package from the [Github Releases](https://github.com/tweakphp/tweakphp/releases)
+
 #### Arch Linux (AUR)
 
 ```bash
