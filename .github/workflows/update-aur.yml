@@ -16,7 +16,13 @@ permissions:
 jobs:
   update-aur:
     runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
     steps:
+      - name: Install Dependencies
+        run: |
+          pacman -Syu --noconfirm git base-devel namcap openssh
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -39,13 +45,12 @@ jobs:
           sed -i "s/^pkgver=.*/pkgver=$VERSION/" PKGBUILD
           sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
 
-      - name: Install Dependencies
-        run: |
-          sudo pacman -Sy --noconfirm base-devel namcap
-
       - name: Generate .SRCINFO
         run: |
-          makepkg --printsrcinfo > .SRCINFO
+          # Create a non-root user for makepkg (it refuses to run as root)
+          useradd -m builder
+          chown -R builder:builder .
+          su - builder -c "cd $(pwd) && makepkg --printsrcinfo > .SRCINFO"
 
       - name: Validate PKGBUILD
         run: |
