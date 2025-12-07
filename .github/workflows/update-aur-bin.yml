@@ -68,9 +68,9 @@ jobs:
           SHA256_X64="${{ steps.checksums.outputs.sha256_x64 }}"
           SHA256_ARM64="${{ steps.checksums.outputs.sha256_arm64 }}"
           
-          # Update version
+          # Update version and reset pkgrel to 1 for new versions
           sed -i "s/^pkgver=.*/pkgver=$VERSION/" PKGBUILD
-          sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
+          sed -i "s/^pkgrel=.*$/pkgrel=1/" PKGBUILD
           
           # Update checksums
           sed -i "s/^sha256sums_x86_64=.*/sha256sums_x86_64=('$SHA256_X64')/" PKGBUILD

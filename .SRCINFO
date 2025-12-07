@@ -1,0 +1,17 @@
+pkgbase = tweakphp
+	pkgdesc = A desktop application with a code editor to tweak your PHP code
+	pkgver = 0.13.0
+	pkgrel = 2
+	url = https://github.com/tweakphp/tweakphp
+	arch = x86_64
+	arch = aarch64
+	license = MIT
+	depends = zlib
+	noextract = tweakphp-0.13.0-x64.AppImage
+	noextract = tweakphp-0.13.0-arm64.AppImage
+	source_x86_64 = tweakphp-0.13.0-x64.AppImage::https://github.com/tweakphp/tweakphp/releases/download/v0.13.0/TweakPHP-0.13.0.AppImage
+	sha256sums_x86_64 = SKIP
+	source_aarch64 = tweakphp-0.13.0-arm64.AppImage::https://github.com/tweakphp/tweakphp/releases/download/v0.13.0/TweakPHP-0.13.0-arm64.AppImage
+	sha256sums_aarch64 = SKIP
+
+pkgname = tweakphp
