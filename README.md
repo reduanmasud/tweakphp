@@ -67,7 +67,7 @@ Download the `.deb` package from the [Github Releases](https://github.com/tweakp
 #### Arch Linux (AUR)
 
 ```bash
-yay -S tweakphp-bin
+yay -S tweakphp
 ```
 
 or with any other AUR helper.
