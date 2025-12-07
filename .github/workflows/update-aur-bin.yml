@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Install Dependencies
         run: |
-          pacman -Syu --noconfirm git base-devel namcap openssh
+          pacman -Syu --noconfirm git base-devel namcap openssh curl
 
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -39,11 +39,42 @@ jobs:
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
+      - name: Download Release Assets and Generate Checksums
+        id: checksums
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          
+          # Download AppImages
+          curl -L -o "TweakPHP-${VERSION}.AppImage" \
+            "https://github.com/tweakphp/tweakphp/releases/download/v${VERSION}/TweakPHP-${VERSION}.AppImage"
+          
+          curl -L -o "TweakPHP-${VERSION}-arm64.AppImage" \
+            "https://github.com/tweakphp/tweakphp/releases/download/v${VERSION}/TweakPHP-${VERSION}-arm64.AppImage" || echo "ARM64 build not found, skipping"
+          
+          # Generate checksums
+          SHA256_X64=$(sha256sum "TweakPHP-${VERSION}.AppImage" | awk '{print $1}')
+          echo "sha256_x64=$SHA256_X64" >> $GITHUB_OUTPUT
+          
+          if [ -f "TweakPHP-${VERSION}-arm64.AppImage" ]; then
+            SHA256_ARM64=$(sha256sum "TweakPHP-${VERSION}-arm64.AppImage" | awk '{print $1}')
+            echo "sha256_arm64=$SHA256_ARM64" >> $GITHUB_OUTPUT
+          else
+            echo "sha256_arm64=SKIP" >> $GITHUB_OUTPUT
+          fi
+
       - name: Update PKGBUILD
         run: |
           VERSION="${{ steps.get_version.outputs.version }}"
+          SHA256_X64="${{ steps.checksums.outputs.sha256_x64 }}"
+          SHA256_ARM64="${{ steps.checksums.outputs.sha256_arm64 }}"
+          
+          # Update version
           sed -i "s/^pkgver=.*/pkgver=$VERSION/" PKGBUILD
           sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
+          
+          # Update checksums
+          sed -i "s/^sha256sums_x86_64=.*/sha256sums_x86_64=('$SHA256_X64')/" PKGBUILD
+          sed -i "s/^sha256sums_aarch64=.*/sha256sums_aarch64=('$SHA256_ARM64')/" PKGBUILD
 
       - name: Generate .SRCINFO
         run: |
@@ -66,3 +97,4 @@ jobs:
           ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
           commit_message: "Update to version ${{ steps.get_version.outputs.version }}"
           ssh_keyscan_types: rsa,ecdsa,ed25519
+          updpkgsums: false
