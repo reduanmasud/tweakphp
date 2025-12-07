@@ -34,14 +34,40 @@
 brew install tweakphp/tap/tweakphp
 ```
 
-#### Manual Download
+#### DMG File
 
-Download the latest release from the [releases page](https://github.com/tweakphp/tweakphp/releases).
+Download the `.dmg` file from the [releases page](https://github.com/tweakphp/tweakphp/releases) and drag TweakPHP to your Applications folder.
 
 ### Linux
 
-Download the AppImage, deb, or rpm package from the [releases page](https://github.com/tweakphp/tweakphp/releases).
+#### Snap
+
+```bash
+snap install tweakphp
+```
+
+#### AppImage
+
+1. Download the `.AppImage` file from the [releases page](https://github.com/tweakphp/tweakphp/releases)
+2. Make it executable: `chmod +x TweakPHP-*.AppImage`
+3. Run the AppImage
+
+#### RPM Package
+
+Download the `.rpm` package from the [releases page](https://github.com/tweakphp/tweakphp/releases) and install it:
+
+```bash
+sudo rpm -i TweakPHP-*.rpm
+```
+
+#### Arch Linux (AUR)
+
+```bash
+yay -S tweakphp-bin
+```
+
+or with any other AUR helper.
 
 ### Windows
 
-Download the installer from the [releases page](https://github.com/tweakphp/tweakphp/releases).
+Download the `.exe` installer from the [releases page](https://github.com/tweakphp/tweakphp/releases) and run it.
