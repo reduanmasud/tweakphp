@@ -20,6 +20,8 @@ import url from 'url'
 
 import { fixPath } from './utils/fix-path.ts'
 import { isWindows } from './system/platform.ts'
+import { AiCompletion } from './tools/ai-completion.ts'
+import { Tab } from '../types/tab.type.ts'
 
 runMigrations()
 
@@ -144,3 +146,13 @@ ipcMain.on('lsp.restart', async event => {
 
 initSnippet()
 initCodeHistory()
+
+const aiService = new AiCompletion()
+
+ipcMain.handle('ai:get-completion', async (event, { context, tab }) => {
+  try {
+    return await aiService.getCompletions(context, tab as Tab)
+  } catch (error: any) {
+    return { completion: [], error: error.message }
+  }
+})

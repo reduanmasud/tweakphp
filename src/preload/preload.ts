@@ -2,6 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron'
 import os from 'os'
 
 export interface IpcRenderer {
+  invoke: (channel: string, ...args: any[]) => Promise<any>
   send: (channel: string, ...args: any[]) => void
   on: (channel: string, callback: (...args: any[]) => void) => void
   removeListener: (channel: string, callback: (...args: any[]) => void) => void
@@ -10,9 +11,14 @@ export interface IpcRenderer {
 
 export interface PlatformInfo {
   getPlatform: () => NodeJS.Platform
+  getLspPort: () => Number
+  isDev: () => boolean
 }
 
 const ipcRendererHandler: IpcRenderer = {
+  invoke: (channel: string, ...args: any[]) => {
+    return ipcRenderer.invoke(channel, ...args)
+  },
   send: (channel: string, ...args: any[]) => {
     ipcRenderer.send(channel, ...args)
   },
@@ -31,6 +37,8 @@ contextBridge.exposeInMainWorld('ipcRenderer', ipcRendererHandler)
 
 contextBridge.exposeInMainWorld('platformInfo', {
   getPlatform: () => os.platform(),
+  getLspPort: () => parseInt(process.env.VITE_LSP_WEBSOCKET_PORT || '54331', 10),
+  isDev: () => process.env.NODE_ENV === 'development',
 })
 
 /**

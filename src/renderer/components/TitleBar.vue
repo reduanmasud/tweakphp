@@ -1,5 +1,12 @@
 <script setup lang="ts">
-  import { PlayIcon, ArrowPathIcon, XMarkIcon, CodeBracketIcon, RectangleStackIcon } from '@heroicons/vue/24/outline'
+  import {
+    PlayIcon,
+    ArrowPathIcon,
+    XMarkIcon,
+    CodeBracketIcon,
+    RectangleStackIcon,
+    HeartIcon,
+  } from '@heroicons/vue/24/outline'
   import events from '../events'
   import { useRoute } from 'vue-router'
   import router from '../router'
@@ -58,6 +65,10 @@
     tabStore.removeTab(id)
     vaporStore.removeVaporConfig(id)
   }
+
+  const sponsor = () => {
+    window.ipcRenderer.send('link.open', 'https://github.com/sponsors/saeedvaziry')
+  }
 </script>
 
 <template>
@@ -75,7 +86,14 @@
         backgroundColor: settingsStore.colors.background,
       }"
     >
-      <div class="flex-grow-0" :class="{ 'pl-[70px]': platform === 'darwin', 'pl-[50px]': platform !== 'darwin' }">
+      <div
+        class="flex-grow-0 transition-all duration-300"
+        :class="{
+          'pl-[70px]': platform === 'darwin',
+          'pl-[50px]': platform !== 'darwin' && !settingsStore.isNavigationExpanded,
+          'pl-48': platform !== 'darwin' && settingsStore.isNavigationExpanded,
+        }"
+      >
         <Toolbar v-if="router.currentRoute.value.name === 'code' && tab" />
       </div>
       <div class="flex h-full flex-grow w-full" v-if="platform === 'darwin'"></div>
@@ -128,6 +146,13 @@
             <XMarkIcon class="size-4" />
           </SecondaryButton>
         </template>
+        <SecondaryButton
+          class="!px-2"
+          v-tippy="{ content: 'Sponsor this project', placement: 'bottom' }"
+          @click="sponsor()"
+        >
+          <HeartIcon class="size-4 text-pink-500" />
+        </SecondaryButton>
       </div>
     </div>
   </div>

@@ -6,7 +6,7 @@
     "name": "Saeed Vaziry",
     "email": "mr.saeedvaziry@gmail.com"
   },
-  "version": "0.11.0",
+  "version": "0.13.0",
   "main": "dist/main.js",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
@@ -76,7 +76,6 @@
       "category": "Development"
     },
     "rpm": {
-      "icon": "icon.ico",
       "packageCategory": "Development",
       "depends": [
         "zlib"
@@ -118,7 +117,8 @@
   "dependencies": {
     "better-sqlite3": "^12.1.1",
     "intelephense": "^1.12.6",
-    "js-yaml": "^4.1.0",
+    "monacopilot": "^1.2.7",
+    "js-yaml": "^4.1.1",
     "reka-ui": "^2.4.1"
   },
   "devDependencies": {
@@ -161,7 +161,7 @@
     "esbuild": "^0.25.0",
     "express": "^4.21.0",
     "fs-extra": "^11.2.0",
-    "glob": "^11.0.0",
+    "glob": "^11.1.0",
     "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@~7.0.7",
     "monaco-editor-wrapper": "~5.4.0",
     "monaco-languageclient": "~8.7.0",
@@ -178,7 +178,7 @@
     "tippy.js": "^6.3.7",
     "typescript": "^5.2.2",
     "utf-8-validate": "^5.0.10",
-    "vite": "^6.3.6",
+    "vite": "^6.4.1",
     "vscode-jsonrpc": "^8.2.1",
     "vscode-languageclient": "^9.0.1",
     "vscode-languageserver": "^9.0.1",

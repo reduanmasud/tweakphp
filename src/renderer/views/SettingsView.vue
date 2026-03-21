@@ -5,6 +5,7 @@
   import GeneralSettings from './settings/GeneralSettings.vue'
   import LoadersSettings from './settings/LoadersSettings.vue'
   import { useRoute, useRouter } from 'vue-router'
+  import AiAutocompleteSetting from '@/views/settings/AiAutocompleteSetting.vue'
   const settingsStore = useSettingsStore()
   const active = ref('')
   const router = useRouter()
@@ -16,7 +17,7 @@
 </script>
 
 <template>
-  <Container class="pt-[38px]">
+  <Container class="pt-[38px] overflow-y-auto no-scrollbar">
     <div class="max-w-2xl mx-auto p-10">
       <ul class="w-full flex items-center py-3 border-b" :style="{ borderBottomColor: settingsStore.colors.border }">
         <li
@@ -25,6 +26,14 @@
           @click="router.push({ name: 'settings' })"
         >
           General
+        </li>
+        <li class="mx-3">|</li>
+        <li
+          class="cursor-pointer hover:text-primary-500"
+          :class="{ 'text-primary-500': route.params.tab === 'ai' }"
+          @click="router.push({ name: 'settings', params: { tab: 'ai' } })"
+        >
+          AI Completions
         </li>
         <li class="mx-3">|</li>
         <li
@@ -38,6 +47,7 @@
       <div class="py-10">
         <GeneralSettings v-if="!route.params.tab" />
         <LoadersSettings v-if="route.params.tab === 'loaders'" />
+        <AiAutocompleteSetting v-if="route.params.tab === 'ai'" />
       </div>
     </div>
   </Container>

@@ -4,6 +4,7 @@ import * as lsp from './lsp/index'
 import { app, ipcMain } from 'electron'
 import { Settings } from '../types/settings.type'
 import os from 'os'
+import { isWindows } from './system/platform.ts'
 
 const homeDir = os.homedir()
 
@@ -32,13 +33,39 @@ const defaultSettings: Settings = {
   windowWidth: 1100,
   windowHeight: 700,
   intelephenseLicenseKey: '' as any,
+  aiStatus: false,
+  aiProvider: null,
+  aiModelId: null,
+  aiApiKey: null,
+  aiPromptTemplateGenerateCodeFromComment: '',
+  aiPromptTemplateCompleteComment: '',
+  aiPromptTemplateCompleteCode: '',
+  navigationDisplay: 'collapsed',
 }
 
 export const init = async () => {
   ipcMain.on('settings.store', async (_event: any, data: Settings) => {
+    data.php = handlePhpExecutable(_event, data.php)
     setSettings(data)
     await lsp.init()
   })
+}
+
+const handlePhpExecutable = (_event: any, phpPath: string) => {
+  try {
+    if (fs.existsSync(phpPath) && fs.lstatSync(phpPath).isDirectory()) {
+      const phpExecutable = isWindows() ? 'php.exe' : 'php'
+      let potentialPath = path.join(phpPath, phpExecutable)
+
+      if (fs.existsSync(potentialPath)) {
+        phpPath = potentialPath
+        _event.sender.send('settings.php-located', potentialPath)
+      }
+    }
+  } catch (err) {
+    // Ignore errors as path may no longer exist or has been changed etc..
+  }
+  return phpPath
 }
 
 export const setSettings = async (data: Settings) => {
@@ -69,6 +96,19 @@ export const getSettings = () => {
       windowWidth: settingsJson.windowWidth || defaultSettings.windowWidth,
       windowHeight: settingsJson.windowHeight || defaultSettings.windowHeight,
       intelephenseLicenseKey: settingsJson.intelephenseLicenseKey || '',
+      aiStatus: settingsJson.aiStatus || defaultSettings.aiStatus,
+      aiProvider: settingsJson.aiProvider || null,
+      aiModelId: settingsJson.aiModelId || null,
+      aiApiKey: settingsJson.aiApiKey || null,
+      aiPromptTemplateGenerateCodeFromComment:
+        settingsJson.aiPromptTemplateGenerateCodeFromComment !== undefined
+          ? settingsJson.aiPromptTemplateGenerateCodeFromComment
+          : '',
+      aiPromptTemplateCompleteComment:
+        settingsJson.aiPromptTemplateCompleteComment !== undefined ? settingsJson.aiPromptTemplateCompleteComment : '',
+      aiPromptTemplateCompleteCode:
+        settingsJson.aiPromptTemplateCompleteCode !== undefined ? settingsJson.aiPromptTemplateCompleteCode : '',
+      navigationDisplay: settingsJson.navigationDisplay || defaultSettings.navigationDisplay,
     }
   } else {
     settings = defaultSettings

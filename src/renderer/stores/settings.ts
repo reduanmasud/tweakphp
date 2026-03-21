@@ -47,6 +47,14 @@ export const useSettingsStore = defineStore('settings', () => {
     windowWidth: 1100,
     windowHeight: 700,
     intelephenseLicenseKey: '',
+    aiStatus: false,
+    aiProvider: 'openrouter',
+    aiModelId: '',
+    aiApiKey: '',
+    aiPromptTemplateGenerateCodeFromComment: '',
+    aiPromptTemplateCompleteComment: '',
+    aiPromptTemplateCompleteCode: '',
+    navigationDisplay: 'collapsed',
   }
 
   const settings = ref<Settings>(defaultSettings)
@@ -55,12 +63,13 @@ export const useSettingsStore = defineStore('settings', () => {
     return themeColors[settings.value.theme as keyof typeof themeColors]
   })
 
+  const isNavigationExpanded = computed(() => settings.value.navigationDisplay === 'expanded')
+
   const setSettings = (s: any) => {
     settings.value = s
   }
 
   const update = () => {
-    // clone settings json
     window.ipcRenderer.send('settings.store', {
       ...settings.value,
     })
@@ -76,5 +85,5 @@ export const useSettingsStore = defineStore('settings', () => {
     monaco.editor.defineTheme('rose-pine', typedRosePineTheme)
   }
 
-  return { settings, themes, setSettings, update, colors, defineEditorThemes }
+  return { settings, themes, setSettings, update, colors, isNavigationExpanded, defineEditorThemes }
 })
