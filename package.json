@@ -114,11 +114,14 @@
     },
     "afterSign": "scripts/notarize.js"
   },
+  "overrides": {
+    "http-proxy-agent": "^7.0.2"
+  },
   "dependencies": {
     "better-sqlite3": "^12.1.1",
     "intelephense": "^1.12.6",
-    "monacopilot": "^1.2.7",
     "js-yaml": "^4.1.1",
+    "monacopilot": "^1.2.7",
     "reka-ui": "^2.4.1"
   },
   "devDependencies": {
@@ -154,7 +157,7 @@
     "concurrently": "^9.1.2",
     "dotenv": "^16.4.7",
     "electron": "^35.7.5",
-    "electron-builder": "^25.1.8",
+    "electron-builder": "^26.8.1",
     "electron-log": "^5.2.4",
     "electron-notarize": "^1.2.2",
     "electron-updater": "^6.3.9",
