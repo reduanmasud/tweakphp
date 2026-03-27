@@ -67,10 +67,12 @@
         "snap"
       ],
       "desktop": {
-        "Name": "TweakPHP",
-        "icon": "./build/icon.png",
-        "Comment": "Tweak your PHP code easily",
-        "Categories": "Development"
+        "entry": {
+          "Name": "TweakPHP",
+          "Icon": "tweakphp",
+          "Comment": "Tweak your PHP code easily",
+          "Categories": "Development"
+        }
       },
       "maintainer": "Saeed Vaziry",
       "category": "Development"
