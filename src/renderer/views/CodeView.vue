@@ -15,7 +15,7 @@
   import { Splitpanes, Pane } from 'splitpanes'
   import 'splitpanes/dist/splitpanes.css'
   import StackedOutput from '../components/StackedOutput.vue'
-  import { useLodaersStore } from '../stores/loaders'
+  import { useLoadersStore } from '../stores/loaders'
 
   const settingsStore = useSettingsStore()
   const executeStore = useExecuteStore()
@@ -24,7 +24,7 @@
   const lspStore = useLspStore()
   const codeEditor = ref<InstanceType<typeof Editor> | null>(null)
   const resultEditor = ref<InstanceType<typeof Editor> | null>(null)
-  const loadersStore = useLodaersStore()
+  const loadersStore = useLoadersStore()
 
   const tabsContainer = ref<HTMLDivElement | null>(null)
 
@@ -249,29 +249,10 @@
     }
   )
 
-  watch(
-    () => tab.value.execution,
-    async () => {
-      await nextTick()
-      getInfo()
-    }
-  )
-
-  watch(
-    () => tab.value.loader,
-    async () => {
-      await nextTick()
-      getInfo()
-    }
-  )
-
-  watch(
-    () => tab.value.type,
-    async () => {
-      await nextTick()
-      getInfo()
-    }
-  )
+  watch([() => tab.value.execution, () => tab.value.loader, () => tab.value.type], async () => {
+    await nextTick()
+    getInfo()
+  })
 
   const setCurrentTab = async (t: Tab) => {
     tabsStore.setCurrent(t)
