@@ -260,7 +260,7 @@
   }
 
   watch(
-    () => settingsStore.colors.backgroundLight,
+    () => settingsStore.colors.border,
     color => {
       const rootStyle = document.documentElement.style
       rootStyle.setProperty('--splitter-gutter-bg', color)
